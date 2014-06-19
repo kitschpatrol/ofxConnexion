@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ofApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxConnexion.cpp">
+      <Filter>addons\ofxConnexion\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxConnexionCamera.cpp">
+      <Filter>addons\ofxConnexion\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{1fdbdf30-aa97-4eef-a39b-2c96ca06558b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxConnexion">
+      <UniqueIdentifier>{1bc2b682-c481-43a0-88ad-da05730467e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxConnexion\libs">
+      <UniqueIdentifier>{24b46914-cdad-42f2-8280-ff3870061287}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxConnexion\libs\3DxWareSDK">
+      <UniqueIdentifier>{c4eaad10-a4e4-4c02-9b4c-ff64466defd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxConnexion\libs\3DxWareSDK\Inc">
+      <UniqueIdentifier>{f98030da-c4f6-4cf3-ba7f-1bf606ceb9c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxConnexion\src">
+      <UniqueIdentifier>{7ba58e2a-96d3-42e7-8964-b9055c9a337f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ofApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\3DxWareVersionNumbers.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\si.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\siapp.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\SiCfg.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\siDefines.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\siSync.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\siSyncDefines.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\siSyncPriv.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\spwdata.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\spwerror.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\spwmacro.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\3DxWareSDK\Inc\spwmath.h">
+      <Filter>addons\ofxConnexion\libs\3DxWareSDK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxConnexion.h">
+      <Filter>addons\ofxConnexion\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxConnexionCamera.h">
+      <Filter>addons\ofxConnexion\src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
