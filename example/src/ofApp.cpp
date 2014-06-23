@@ -23,21 +23,35 @@ void ofApp::update(){
 	camera.update();
 }
 
-
 void ofApp::draw(){
 	
-//	ofBackground(ofColor::salmon);
-//	ofSetColor(255);
-//	ofCircle(ofGetWidth()/2, ofGetHeight()/2, 200);
-	
-	//cout << "DRAW CALLED " << ofGetElapsedTimef() << endl;
+
+	ofEnableDepthTest();
 	camera.begin();
 
 	ofNoFill();
-	ofColor(255,0,0);
-	ofSphere(0,0,0,30);
 	
+	ofSetColor(255);
+	ofDrawSphere(0,0,0,15);	
+
+	ofVec3f satellite(30, 0, 0);
+	ofSetColor(255,255,0);
+	ofDrawSphere(satellite,5);
+
+	satellite.rotate(90,ofVec3f(0,1,0));
+	ofSetColor(255,0,255);
+	ofDrawSphere(satellite,5);
+
+	satellite.rotate(90,ofVec3f(0,1,0));
+	ofSetColor(0,255,255);
+	ofDrawSphere(satellite,5);
+
+	satellite.rotate(90,ofVec3f(0,1,0));
+	ofSetColor(0,255,0);
+	ofDrawSphere(satellite,5);
+
 	ofFill();
+	ofSetColor(255);
 	glPointSize(3);
 	spaceDust.drawVertices();
 
@@ -46,12 +60,12 @@ void ofApp::draw(){
 	ofNode n = connection.getData().currentState;
 
 	ofDrawBitmapString("POS:\n" + string() +
-		"TX: " + ofToString(n.getPosition().x) + "\n" +
-		"TY: " + ofToString(n.getPosition().y) + "\n" + 
-		"TZ: " + ofToString(n.getPosition().z) + "\n" +
-		"RX: " + ofToString(n.getOrientationEuler().x) + "\n" +
-		"RY: " + ofToString(n.getOrientationEuler().y) + "\n" +
-		"RZ: " + ofToString(n.getOrientationEuler().z) + "\n", 20, 20);
+		"TX: " + ofToString(connection.getData().translation[0]) + "\n" +
+		"TY: " + ofToString(connection.getData().translation[1]) + "\n" + 
+		"TZ: " + ofToString(connection.getData().translation[2]) + "\n" +
+		"RX: " + ofToString(connection.getData().rotation[0]) + "\n" +
+		"RY: " + ofToString(connection.getData().rotation[1]) + "\n" +
+		"RZ: " + ofToString(connection.getData().rotation[2]) + "\n", 20, 20);
 	
 }
 

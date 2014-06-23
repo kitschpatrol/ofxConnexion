@@ -154,6 +154,8 @@ void ofxConnexion::SbMotionEvent(SiSpwEvent *pEvent)
 	data.rotation[1] = pEvent->u.spwData.mData[SI_RY];
 	data.rotation[2] = pEvent->u.spwData.mData[SI_RZ];
 
+	data.active = true;
+
 	data.currentState.setPosition(ofVec3f(data.translation[0],data.translation[1],data.translation[2]));
 	data.currentState.setOrientation(ofVec3f(data.rotation[0],data.rotation[1],data.rotation[2]));
 
@@ -234,6 +236,8 @@ void ofxConnexion::SbZeroEvent()
 	data.rotation[0] = 0;
 	data.rotation[1] = 0;
 	data.rotation[2] = 0;
+
+	data.active = false;
 
 	data.currentState.setPosition(ofVec3f(data.translation[0],data.translation[1],data.translation[2]));
 	data.currentState.setOrientation(ofVec3f(data.rotation[0],data.rotation[1],data.rotation[2]));

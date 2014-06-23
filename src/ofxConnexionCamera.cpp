@@ -1,32 +1,97 @@
 #include "ofxConnexionCamera.h"
 
+
+ofxConnexionCamera::ofxConnexionCamera(){
+	baseRotate = 0;
+	baseDistance = 0;
+	upVec = ofVec3f(0,1,0);
+	exponent = 2.0;
+	activeDampConstant = .1;
+	passiveDampConstant= .01;
+	curDampConstant = .01;
+
+	maxRotate = ofVec3f(45,30,90);
+	maxTranslate = ofVec3f(100,100,50);
+}
+
 void ofxConnexionCamera::setup(ofxConnexion& con){
 	connexion = &con;
-	curLeftRight = 0;
-	curUpDown = 0;
+}
+
+void ofxConnexionCamera::drawDebug(){
+	ofPushStyle();
+
+	ofNoFill();
+	ofSetColor(ofColor::azure);
+	ofSphere(lookTarget, 10);
+	ofSetColor(ofColor::forestGreen);
+	ofLine(lookTarget, getPosition());
+	
+	ofPopStyle();
 }
 
 void ofxConnexionCamera::update(){
 
 	ConnexionData& data = connexion->getData();
 	
-	float leftRight = ofMap(data.translation[0],-2048,2048,-1,1,true);
-	//leftRight = ofMap(data.currentState.getPosition().x,-2048,2048,-1,1,true);
+	//float leftRight = ofMap(data.translation[0],-2048,2048,-1,1,true);
 
-//	float upDown = 0;
-	float upDown = ofMap(data.rotation[0],-180,180,-1,1,true);
-	//upDown += ofMap(data.currentState.getOrientationEuler().x,-180,180,-1,1,true);
+	ofVec3f rotationSigns(
+		data.rotation[0] > 0 ? 1 : -1,
+		data.rotation[1] > 0 ? 1 : -1,
+		data.rotation[2] > 0 ? 1 : -1);
 
-	curLeftRight = ofLerp(curLeftRight, leftRight, .1);
-	curUpDown    = ofLerp(curUpDown, upDown, .1);
+	ofVec3f translationSigns(
+		data.translation[0] > 0 ? 1 : -1,
+		data.translation[1] > 0 ? 1 : -1,
+		data.translation[2] > 0 ? 1 : -1);
 
-	ofVec3f newPosition = lookTarget;
-	newPosition.z += baseDistance;
+	ofVec3f rotateNormalized = ofVec3f(
+		powf(ofMap(abs(data.rotation[0]),-2048,2048,-1,1,true), exponent),
+		powf(ofMap(abs(data.rotation[1]),-2048,2048,-1,1,true), exponent),
+		powf(ofMap(abs(data.rotation[2]),-2048,2048,-1,1,true), exponent)) * rotationSigns;
 
-	newPosition.rotate(curLeftRight*90,lookTarget,ofVec3f(0,1,0));
-	newPosition.rotate(curUpDown*75,lookTarget,ofVec3f(1,0,0));
+	ofVec3f translateNormalized = ofVec3f(
+		powf(ofMap(abs(data.translation[0]),-2048,2048,-1,1,true), exponent),
+		powf(ofMap(abs(data.translation[1]),-2048,2048,-1,1,true), exponent),
+		powf(ofMap(abs(data.translation[2]),-2048,2048,-1,1,true), exponent)) * translationSigns;
 
-	setPosition(newPosition);
-	lookAt(lookTarget);
+	if(connexion->getData().active){
+		curDampConstant = ofLerp(curDampConstant, activeDampConstant, .2);
+	}
+	else{
+		curDampConstant = ofLerp(curDampConstant, passiveDampConstant, .2);
+	}
+
+	curRotate = curRotate.getInterpolated(rotateNormalized, curDampConstant);
+	curTranslate = curTranslate.getInterpolated(translateNormalized, curDampConstant);
+
+	ofVec3f mappedRotations(
+		ofMap(curRotate.x, -1, 1, -maxRotate.x, maxRotate.x),
+		ofMap(curRotate.y, -1, 1, -maxRotate.y, maxRotate.y),
+		ofMap(curRotate.z, -1, 1, -maxRotate.z, maxRotate.z));
+
+	ofVec3f mappedTranslations(
+		ofMap(curTranslate.x, -1, 1, -maxTranslate.x, maxTranslate.x),
+		ofMap(curTranslate.y, -1, 1, -maxTranslate.y, maxTranslate.y),
+		ofMap(curTranslate.z, -1, 1,  maxTranslate.z, -maxTranslate.z));
+
+	//cout << "Cur rotate is " << curRotate << endl;
+	//cout << "Map rotate is " << mappedRotations << endl;
+
+	ofNode positionNode;
+	positionNode.setPosition(lookTarget);
+	positionNode.move(ofVec3f(0,0,baseDistance));
+
+	positionNode.rotateAround(baseRotate + mappedRotations.z, upVec, lookTarget);
+	positionNode.rotateAround(mappedRotations.x, positionNode.getSideDir(), lookTarget);
+
+	ofVec3f adjustedTranslation = positionNode.getOrientationQuat() * mappedTranslations;
+
+	setPosition(positionNode.getPosition() + adjustedTranslation);
+	lookAt(lookTarget, upVec);
+	
+	//finally apply twist
+	rotate(mappedRotations.y,getLookAtDir());
 	
 }

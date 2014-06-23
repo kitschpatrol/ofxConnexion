@@ -34,6 +34,7 @@ class ofxConnexion : public ofThread {
 
 	bool setup();
 	void update();
+	bool isActive();
 
 	ConnexionData& getData();
 	
@@ -47,7 +48,6 @@ class ofxConnexion : public ofThread {
 	HDC         hdc;          /* Handle to Device Context used to draw on screen */
 	HWND        hWndMain;     /* Handle to Main Window */
 	SiHdl       devHdl;       /* Handle to 3D Mouse Device */
-
 	ConnexionData data;
 
 	void threadedFunction();
