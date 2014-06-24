@@ -2,8 +2,6 @@
 
 
 ofxConnexionCamera::ofxConnexionCamera(){
-	baseRotate = 0;
-	baseDistance = 0;
 	upVec = ofVec3f(0,1,0);
 	exponent = 2.0;
 	activeDampConstant = .1;
@@ -11,7 +9,7 @@ ofxConnexionCamera::ofxConnexionCamera(){
 	curDampConstant = .01;
 
 	maxRotate = ofVec3f(45,30,90);
-	maxTranslate = ofVec3f(100,100,50);
+	maxTranslate = ofVec3f(1000,1000,500);
 }
 
 void ofxConnexionCamera::setup(ofxConnexion& con){
@@ -81,17 +79,19 @@ void ofxConnexionCamera::update(){
 
 	ofNode positionNode;
 	positionNode.setPosition(lookTarget);
-	positionNode.move(ofVec3f(0,0,baseDistance));
+	positionNode.move(baseOffset);
 
-	positionNode.rotateAround(baseRotate + mappedRotations.z, upVec, lookTarget);
-	positionNode.rotateAround(mappedRotations.x, positionNode.getSideDir(), lookTarget);
+	positionNode.rotateAround(baseRotate.z + mappedRotations.z, upVec, lookTarget);
+	positionNode.rotateAround(baseRotate.x + mappedRotations.x, positionNode.getSideDir(), lookTarget);
 
-	ofVec3f adjustedTranslation = positionNode.getOrientationQuat() * mappedTranslations;
+	ofQuaternion upVecCompensate;
+	upVecCompensate.makeRotate(ofVec3f(0,1,0),upVec);
+	ofVec3f adjustedTranslation = upVecCompensate * positionNode.getOrientationQuat() * mappedTranslations;
 
 	setPosition(positionNode.getPosition() + adjustedTranslation);
 	lookAt(lookTarget, upVec);
 	
 	//finally apply twist
-	rotate(mappedRotations.y,getLookAtDir());
+	rotate(baseRotate.y + mappedRotations.y,getLookAtDir());
 	
 }

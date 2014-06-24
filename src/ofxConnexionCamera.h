@@ -22,8 +22,8 @@ class ofxConnexionCamera : public ofCamera
 	float activeDampConstant;
 	float passiveDampConstant;
 
-	float baseDistance;
-	float baseRotate;
+	ofVec3f baseOffset;
+	ofVec3f baseRotate;
 	
   protected:
 	  ofxConnexion* connexion;
