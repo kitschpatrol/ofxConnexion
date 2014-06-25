@@ -4,8 +4,8 @@
 ofxConnexionCamera::ofxConnexionCamera(){
 	upVec = ofVec3f(0,1,0);
 	exponent = 2.0;
-	activeDampConstant = .1;
-	passiveDampConstant= .01;
+	activeDampConstant = .05;
+	passiveDampConstant= .003;
 	curDampConstant = .01;
 
 	maxRotate = ofVec3f(45,30,90);
@@ -72,7 +72,7 @@ void ofxConnexionCamera::update(){
 	ofVec3f mappedTranslations(
 		ofMap(curTranslate.x, -1, 1, -maxTranslate.x, maxTranslate.x),
 		ofMap(curTranslate.y, -1, 1, -maxTranslate.y, maxTranslate.y),
-		ofMap(curTranslate.z, -1, 1,  maxTranslate.z, -maxTranslate.z));
+		ofMap(curTranslate.z, -1, 1, -maxTranslate.z, maxTranslate.z));
 
 	//cout << "Cur rotate is " << curRotate << endl;
 	//cout << "Map rotate is " << mappedRotations << endl;
