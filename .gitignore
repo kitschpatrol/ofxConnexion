@@ -6,8 +6,16 @@
 *.DS_*
 xcuserdata
 
+libs/3DxWareSDK/*
+
+*.suo
+*.opensdf
+*.sdf
+
 .svn/
 obj/
 bin/
+*/x64/*
+
 build/
 !data/
