@@ -1,39 +1,39 @@
 #include "ofxConnexionCamera.h"
 
+ofxConnexionCamera::ofxConnexionCamera() {
+  upVec = ofVec3f(0, 1, 0);
+  exponent = 2.0;
+  activeDampConstant = .05;
+  passiveDampConstant = .003;
+  curDampConstant = .01;
 
-ofxConnexionCamera::ofxConnexionCamera(){
-	upVec = ofVec3f(0,1,0);
-	exponent = 2.0;
-	activeDampConstant = .05;
-	passiveDampConstant= .003;
-	curDampConstant = .01;
-
-	maxRotate = ofVec3f(45,30,90);
-	maxTranslate = ofVec3f(1000,1000,500);
+  maxRotate = ofVec3f(45, 30, 90);
+  maxTranslate = ofVec3f(1000, 1000, 500);
 }
 
-void ofxConnexionCamera::setup(ofxConnexion& con){
-	connexion = &con;
+void ofxConnexionCamera::setup(ofxConnexion &con) {
+  connexion = &con;
 }
 
-void ofxConnexionCamera::drawDebug(){
-	ofPushStyle();
+void ofxConnexionCamera::drawDebug() {
+  ofPushStyle();
 
-	ofNoFill();
-	ofSetColor(ofColor::azure);
-	ofSphere(lookTarget, 10);
-	ofSetColor(ofColor::forestGreen);
-	ofLine(lookTarget, getPosition());
-	
-	ofPopStyle();
+  ofNoFill();
+  ofSetColor(ofColor::azure);
+  ofSphere(lookTarget, 10);
+  ofSetColor(ofColor::forestGreen);
+  ofLine(lookTarget, getPosition());
+
+  ofPopStyle();
 }
 
-void ofxConnexionCamera::update(){
+void ofxConnexionCamera::update() {
 
-	ConnexionData& data = ofxConnexion::connexionData;
-	
-	//float leftRight = ofMap(data.translation[0],-2048,2048,-1,1,true);
+  ConnexionData &data = ofxConnexion::connexionData;
 
+  // float leftRight = ofMap(data.translation[0],-2048,2048,-1,1,true);
+
+  // clang-format off
 	ofVec3f rotationSigns(
 		data.rotation[0] > 0 ? 1 : -1,
 		data.rotation[1] > 0 ? 1 : -1,
@@ -53,17 +53,18 @@ void ofxConnexionCamera::update(){
 		powf(ofMap(abs(data.position[0]),-2048,2048,-1,1,true), exponent),
 		powf(ofMap(abs(data.position[1]),-2048,2048,-1,1,true), exponent),
 		powf(ofMap(abs(data.position[2]),-2048,2048,-1,1,true), exponent)) * translationSigns;
+  // clang-format on
 
-	if(true){ // formerly connexion->getData().active, exclusive to obviousjim's branch?
-		curDampConstant = ofLerp(curDampConstant, activeDampConstant, .2);
-	}
-	else{
-		curDampConstant = ofLerp(curDampConstant, passiveDampConstant, .2);
-	}
+  if (true) { // formerly connexion->getData().active, exclusive to obviousjim's branch?
+    curDampConstant = ofLerp(curDampConstant, activeDampConstant, .2);
+  } else {
+    curDampConstant = ofLerp(curDampConstant, passiveDampConstant, .2);
+  }
 
-	curRotate = curRotate.getInterpolated(rotateNormalized, curDampConstant);
-	curTranslate = curTranslate.getInterpolated(translateNormalized, curDampConstant);
+  curRotate = curRotate.getInterpolated(rotateNormalized, curDampConstant);
+  curTranslate = curTranslate.getInterpolated(translateNormalized, curDampConstant);
 
+  // clang-format off
 	ofVec3f mappedRotations(
 		ofMap(curRotate.x, -1, 1, -maxRotate.x, maxRotate.x),
 		ofMap(curRotate.y, -1, 1, -maxRotate.y, maxRotate.y),
@@ -73,25 +74,25 @@ void ofxConnexionCamera::update(){
 		ofMap(curTranslate.x, -1, 1, -maxTranslate.x, maxTranslate.x),
 		ofMap(curTranslate.y, -1, 1, -maxTranslate.y, maxTranslate.y),
 		ofMap(curTranslate.z, -1, 1, -maxTranslate.z, maxTranslate.z));
+  // clang-format on
 
-	//cout << "Cur rotate is " << curRotate << endl;
-	//cout << "Map rotate is " << mappedRotations << endl;
+  // cout << "Cur rotate is " << curRotate << endl;
+  // cout << "Map rotate is " << mappedRotations << endl;
 
-	ofNode positionNode;
-	positionNode.setPosition(lookTarget);
-	positionNode.move(baseOffset);
+  ofNode positionNode;
+  positionNode.setPosition(lookTarget);
+  positionNode.move(baseOffset);
 
-	positionNode.rotateAround(baseRotate.z + mappedRotations.z, upVec, lookTarget);
-	positionNode.rotateAround(baseRotate.x + mappedRotations.x, positionNode.getSideDir(), lookTarget);
+  positionNode.rotateAround(baseRotate.z + mappedRotations.z, upVec, lookTarget);
+  positionNode.rotateAround(baseRotate.x + mappedRotations.x, positionNode.getSideDir(), lookTarget);
 
-	ofQuaternion upVecCompensate;
-	upVecCompensate.makeRotate(ofVec3f(0,1,0),upVec);
-	ofVec3f adjustedTranslation = upVecCompensate * positionNode.getOrientationQuat() * mappedTranslations;
+  ofQuaternion upVecCompensate;
+  upVecCompensate.makeRotate(ofVec3f(0, 1, 0), upVec);
+  ofVec3f adjustedTranslation = upVecCompensate * positionNode.getOrientationQuat() * mappedTranslations;
 
-	setPosition(positionNode.getPosition() + adjustedTranslation);
-	lookAt(lookTarget, upVec);
-	
-	//finally apply twist
-	rotate(baseRotate.y + mappedRotations.y,getLookAtDir());
-	
+  setPosition(positionNode.getPosition() + adjustedTranslation);
+  lookAt(lookTarget, upVec);
+
+  // finally apply twist
+  rotate(baseRotate.y + mappedRotations.y, getLookAtDir());
 }

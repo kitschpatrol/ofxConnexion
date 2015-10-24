@@ -3,32 +3,30 @@
 #include "ofMain.h"
 #include "ofxConnexion.h"
 
-class ofxConnexionCamera : public ofCamera
-{
-  public:
-	ofxConnexionCamera();
-	void setup(ofxConnexion& con);
-	void update();
-	
-	void drawDebug();
+class ofxConnexionCamera : public ofCamera {
+public:
+  ofxConnexionCamera();
+  void setup(ofxConnexion &con);
+  void update();
 
-	ofVec3f lookTarget;
-	ofVec3f upVec;
+  void drawDebug();
 
-	ofVec3f maxRotate;
-	ofVec3f maxTranslate;
+  ofVec3f lookTarget;
+  ofVec3f upVec;
 
-	float exponent;
-	float activeDampConstant;
-	float passiveDampConstant;
+  ofVec3f maxRotate;
+  ofVec3f maxTranslate;
 
-	ofVec3f baseOffset;
-	ofVec3f baseRotate;
-	
-  protected:
-	  ofxConnexion* connexion;
-	  float curDampConstant; //lerps between active and inactive
-	  ofVec3f curTranslate;
-	  ofVec3f curRotate;
+  float exponent;
+  float activeDampConstant;
+  float passiveDampConstant;
 
+  ofVec3f baseOffset;
+  ofVec3f baseRotate;
+
+protected:
+  ofxConnexion *connexion;
+  float curDampConstant; // lerps between active and inactive
+  ofVec3f curTranslate;
+  ofVec3f curRotate;
 };

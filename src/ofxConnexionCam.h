@@ -6,20 +6,20 @@
 
 class ofxConnexionCam : public ofEasyCam {
 public:
-    ofxConnexionCam();
-    ~ofxConnexionCam();
-    
-    void enableInput();
-	void disableInput();
-	bool getInputEnabled();
+  ofxConnexionCam();
+  ~ofxConnexionCam();
+
+  void enableInput();
+  void disableInput();
+  bool getInputEnabled();
 
 private:
-	void connexionUpdate(ofEventArgs & args);
-	void updateRotation();
-	void updateTranslation();
+  void connexionUpdate(ofEventArgs &args);
+  void updateRotation();
+  void updateTranslation();
 
-    bool bInputEnabled;
-    bool bDoRotate;
-    bool bDoTranslate;
-    bool bLookBack;
+  bool bInputEnabled;
+  bool bDoRotate;
+  bool bDoTranslate;
+  bool bLookBack;
 };
