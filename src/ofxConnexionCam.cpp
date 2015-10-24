@@ -11,6 +11,7 @@ ofxConnexionCam::ofxConnexionCam() {
   isRotationEnabled = true;
   isTranslationEnabled = true;
   isRollEnabled = true;
+  isPitchInverted = true;
   enableInput();
 }
 
@@ -73,7 +74,7 @@ void ofxConnexionCam::updateTranslation(ConnexionData &data) {
 
 void ofxConnexionCam::updateRotation(ConnexionData &data) {
   // clang-format off
-  rotate(ofQuaternion((float)data.rotation[0] * rotationSensitivity, ofCamera::getXAxis(), // pitch
+  rotate(ofQuaternion((float)data.rotation[0] * rotationSensitivity * (isPitchInverted ? 1.0 : -1.0), ofCamera::getXAxis(), // pitch
                       (float)-data.rotation[2] * rotationSensitivity, isRollEnabled ? ofCamera::getYAxis() : upVector, // yaw
                       isRollEnabled ? (float)data.rotation[1] * rotationSensitivity : 0.0, ofCamera::getZAxis())); // roll
   // clang-format on

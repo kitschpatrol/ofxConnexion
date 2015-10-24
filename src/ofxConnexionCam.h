@@ -15,6 +15,7 @@ public:
   bool isTranslationEnabled;
   bool isRotationEnabled;
   bool isRollEnabled; // Keeps "up" up
+  bool isPitchInverted; // Controversial
 
   float rotationSensitivity;
   float translationSensitivity;
