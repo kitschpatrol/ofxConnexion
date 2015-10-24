@@ -3,10 +3,14 @@
 
 #include "ofxConnexionCam.h"
 
-ofxConnexionCam::ofxConnexionCam() : ofEasyCam() {
-  bInputEnabled = false;
-  bDoRotate = true;
-  bDoTranslate = true;
+ofxConnexionCam::ofxConnexionCam() {
+  upVector.set(0, 1, 0);
+  isInputEnabled = false;
+  rotationSensitivity = 0.002;
+  translationSensitivity = 0.005;
+  isRotationEnabled = true;
+  isTranslationEnabled = true;
+  isRollEnabled = true;
   enableInput();
 }
 
@@ -15,80 +19,62 @@ ofxConnexionCam::~ofxConnexionCam() {
 }
 
 void ofxConnexionCam::enableInput() {
-  if (!bInputEnabled) {
-    bInputEnabled = true;
+  if (!isInputEnabled) {
+    isInputEnabled = true;
     ofxConnexion::start();
-    ofAddListener(ofEvents().update, this, &ofxConnexionCam::connexionUpdate);
+    ofAddListener(ofxConnexion::axisUpdateEvent, this, &ofxConnexionCam::onAxisUpdate);
+    ofAddListener(ofxConnexion::buttonPressedEvent, this, &ofxConnexionCam::onButtonPressed);
+    ofAddListener(ofxConnexion::buttonReleasedEvent, this, &ofxConnexionCam::onButtonReleased);
   }
 }
 
 void ofxConnexionCam::disableInput() {
-  if (bInputEnabled) {
-    bInputEnabled = false;
-    ofRemoveListener(ofEvents().update, this, &ofxConnexionCam::connexionUpdate);
+  if (isInputEnabled) {
+    isInputEnabled = false;
+    ofRemoveListener(ofxConnexion::axisUpdateEvent, this, &ofxConnexionCam::onAxisUpdate);
+    ofRemoveListener(ofxConnexion::buttonPressedEvent, this, &ofxConnexionCam::onButtonPressed);
+    ofRemoveListener(ofxConnexion::buttonReleasedEvent, this, &ofxConnexionCam::onButtonReleased);
     ofxConnexion::stop();
   }
 }
 
 bool ofxConnexionCam::getInputEnabled() {
-  return bInputEnabled;
+  return isInputEnabled;
 }
 
-void ofxConnexionCam::connexionUpdate(ofEventArgs &args) {
-  // this would be a good place to get data from multiple devices
-  // cout << data.getButton(0) << " " << data.getButton(1) << endl;
-  ConnexionData &data = ofxConnexion::connexionData;
-  if (data.getButton(1)) {
-    reset();
-  }
-  if (data.getButton(0)) {
-    if (!bLookBack) {
-      ofQuaternion rot = ofQuaternion(180, ofCamera::getYAxis());
-      rotate(rot);
-      bLookBack = true;
-    }
-  } else {
-    bLookBack = false;
-  }
-  // bDoRotate = !data.getButton(0);
-
-  // use the button state to set the LED
-  // ofxConnexion::setLed(data.getButton(0) || data.getButton(1));
-  if (bDoRotate) {
-    updateRotation();
-  }
-  if (bDoTranslate) {
-    updateTranslation();
+void ofxConnexionCam::onButtonPressed(int &button) {
+  // Left button resets camera
+  if (button == 0) {
+    resetTransform();
   }
 }
 
-void ofxConnexionCam::updateTranslation() {
+void ofxConnexionCam::onButtonReleased(int &button) {
+  // Nothing yet...
+}
+
+void ofxConnexionCam::onAxisUpdate(ConnexionData &data) {
+  if (isRotationEnabled) {
+    updateRotation(data);
+  }
+
+  if (isTranslationEnabled) {
+    updateTranslation(data);
+  }
+}
+
+void ofxConnexionCam::updateTranslation(ConnexionData &data) {
   // clang-format off
-	ConnexionData& data = ofxConnexion::connexionData;
-#if 1
-  float distance = getDistance() / 2000;
-	move((getXAxis() * data.position[0] / 100 * (distance + 1))
-     - (getYAxis() * data.position[2] / 100 * (distance + 1))
-     + (getZAxis() * data.position[1] / 100 * (distance + 1)));
-#else
-    move((getXAxis() * data.position[0] / 50)
-       + (getYAxis() * data.position[2] / 50)
-       - (getZAxis() * data.position[1] / 50));
-#endif
+  move((getXAxis() * (float)data.position[0] * translationSensitivity)
+      -(getYAxis() * (float)data.position[2] * translationSensitivity)
+      +(getZAxis() * (float)data.position[1] * translationSensitivity));
   // clang-format on
 }
 
-void ofxConnexionCam::updateRotation() {
-  ofQuaternion curRot;
-  ConnexionData &data = ofxConnexion::connexionData;
-
+void ofxConnexionCam::updateRotation(ConnexionData &data) {
   // clang-format off
-  curRot = ofQuaternion((float)data.rotation[0] / 500, ofCamera::getXAxis(),
-                        (float)-data.rotation[2] / 500, ofCamera::getYAxis(),
-                        (float)data.rotation[1] / 500, ofCamera::getZAxis());
+  rotate(ofQuaternion((float)data.rotation[0] * rotationSensitivity, ofCamera::getXAxis(), // pitch
+                      (float)-data.rotation[2] * rotationSensitivity, isRollEnabled ? ofCamera::getYAxis() : upVector, // yaw
+                      isRollEnabled ? (float)data.rotation[1] * rotationSensitivity : 0.0, ofCamera::getZAxis())); // roll
   // clang-format on
-
-  ofNode &target = getTarget();
-  // setPosition((ofCamera::getGlobalPosition()-target.getGlobalPosition())*curRot +target.getGlobalPosition());
-  rotate(curRot);
 }

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "ofEasyCam.h"
-#include "ofEvents.h"
+#include "ofMain.h"
 #include "ofxConnexion.h"
 
-class ofxConnexionCam : public ofEasyCam {
+class ofxConnexionCam : public ofCamera {
 public:
   ofxConnexionCam();
   ~ofxConnexionCam();
@@ -13,13 +12,22 @@ public:
   void disableInput();
   bool getInputEnabled();
 
-protected:
-  void connexionUpdate(ofEventArgs &args);
-  void updateRotation();
-  void updateTranslation();
+  bool isTranslationEnabled;
+  bool isRotationEnabled;
+  bool isRollEnabled; // Keeps "up" up
 
-  bool bInputEnabled;
-  bool bDoRotate;
-  bool bDoTranslate;
-  bool bLookBack;
+  float rotationSensitivity;
+  float translationSensitivity;
+
+protected:
+  // Events from the device
+  void onAxisUpdate(ConnexionData &data);
+  void onButtonPressed(int &button);
+  void onButtonReleased(int &button);
+
+  void updateRotation(ConnexionData &data);
+  void updateTranslation(ConnexionData &data);
+
+  bool isInputEnabled;
+  ofVec3f upVector;
 };
