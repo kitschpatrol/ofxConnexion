@@ -31,13 +31,14 @@ ofVec3f ConnexionData::getNormalizedRotation() {
 ofEvent<ConnexionData> ofxConnexion::axisUpdateEvent;
 ofEvent<int> ofxConnexion::buttonPressedEvent;
 ofEvent<int> ofxConnexion::buttonReleasedEvent;
-
+ofVec3f ofxConnexion::driverPositionSpeed;
 ConnexionData ofxConnexion::connexionData;
 UInt16 ofxConnexion::clientId;
 
 void ofxConnexion::start() {
   InstallConnexionHandlers(driverHandler, 0L, 0L);
   clientId = RegisterConnexionClient(kConnexionClientWildcard, NULL, kConnexionClientModeTakeOver, kConnexionMaskAll);
+  fetchDevicePreferences();
 }
 
 void ofxConnexion::stop() {
@@ -54,22 +55,40 @@ void ofxConnexion::setLed(bool state) {
   ConnexionClientControl(clientId, kConnexionCtlSetLEDState, state ? OFX_CONNEXION_LED_ON : OFX_CONNEXION_LED_OFF, &result);
 }
 
+void ofxConnexion::fetchDevicePreferences() {
+  ConnexionDevicePrefs preferences;
+  ConnexionGetCurrentDevicePrefs(kDevID_AnyDevice, &preferences);
+  driverPositionSpeed.set(preferences.speed[0], preferences.speed[1], preferences.speed[2]);
+  // ofLogVerbose() << "Read updated preferences: " << driverPositionSpeed << endl;
+}
+
 void ofxConnexion::driverHandler(io_connect_t connection, natural_t messageType, void *messageArgument) {
-
-  ConnexionDeviceStatePtr msg = (ConnexionDeviceStatePtr)messageArgument;
-
   switch (messageType) {
-    case kConnexionMsgDeviceState:
-      switch (msg->command) {
+    case kConnexionMsgDeviceState: {
+      ConnexionDeviceStatePtr deviceState = (ConnexionDeviceStatePtr)messageArgument;
+
+      switch (deviceState->command) {
         case kConnexionCmdHandleAxis: {
-          memcpy(connexionData.position, &(msg->axis[0]), 3 * 16); // each axis value is int16_t
-          memcpy(connexionData.rotation, &(msg->axis[3]), 3 * 16); // each axis value is int16_t
+          memcpy(connexionData.position, &(deviceState->axis[0]), 3 * 16); // each axis value is int16_t
+
+          //          static int maxX = 0;
+          //          static int maxY = 0;
+          //          static int maxZ = 0;
+          //
+          //          maxX = MAX(maxX, connexionData.position[0]);
+          //          maxY = MAX(maxY, connexionData.position[1]);
+          //          maxZ = MAX(maxZ, connexionData.position[2]);
+          //          cout << "px" << maxX << endl;
+          //          cout << "py" << maxY << endl;
+          //          cout << "pz" << maxZ << endl;
+
+          memcpy(connexionData.rotation, &(deviceState->axis[3]), 3 * 16); // each axis value is int16_t
           ofNotifyEvent(axisUpdateEvent, connexionData);
           break;
         }
         case kConnexionCmdHandleButtons: {
-          connexionData.deviceId = msg->address;
-          connexionData.buttonState = msg->buttons;
+          connexionData.deviceId = deviceState->address;
+          connexionData.buttonState = deviceState->buttons;
           static uint32_t lastButtonState = 0;
 
           // detect button changes (packed into int32_t)
@@ -89,6 +108,24 @@ void ofxConnexion::driverHandler(io_connect_t connection, natural_t messageType,
           lastButtonState = connexionData.buttonState;
           break;
         }
+        default: {
+          ofLogWarning() << "Unhandled kConnexionMsgDeviceState: " << deviceState->command << endl;
+          break;
+        }
       }
+      break;
+    }
+    case kConnexionMsgPrefsChanged: {
+      fetchDevicePreferences();
+      break;
+    }
+    case kConnexionMsgCalibrateDevice: {
+      // whatever
+      break;
+    }
+    default: {
+      ofLogWarning() << "ofxConnexion Unhandled messageType: " << messageType << endl;
+      break;
+    }
   }
 }
