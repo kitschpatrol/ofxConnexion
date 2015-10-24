@@ -4,10 +4,10 @@
 #include "ofxConnexionCam.h"
 
 ofxConnexionCam::ofxConnexionCam() {
-  connectionController.targetNode = this;
-  connectionController.enableInput();
+  connexionController.targetNode = this;
+  connexionController.enableInput();
 }
 
 ofxConnexionCam::~ofxConnexionCam() {
-  connectionController.disableInput();
+  connexionController.disableInput();
 }

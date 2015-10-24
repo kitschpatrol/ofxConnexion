@@ -5,10 +5,10 @@
 #include "ofxConnexion.h"
 #include "ofMain.h"
 
-class ofxConnectionNodeController {
+class ofxConnexionNodeController {
 public:
-  ofxConnectionNodeController();
-  ~ofxConnectionNodeController();
+  ofxConnexionNodeController();
+  ~ofxConnexionNodeController();
 
   ofNode *targetNode;
 

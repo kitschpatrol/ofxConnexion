@@ -1,13 +1,11 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxConnectionNodeController.h"
+#include "ofxConnexionNodeController.h"
 
 class ofxConnexionCam : public ofCamera {
 public:
   ofxConnexionCam();
   ~ofxConnexionCam();
-  ofxConnectionNodeController connectionController;
-
-protected:
+  ofxConnexionNodeController connexionController;
 };

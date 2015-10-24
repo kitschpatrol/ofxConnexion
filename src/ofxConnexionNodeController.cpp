@@ -1,13 +1,13 @@
 //
-//  ofxConnectionNodeController.cpp
+//  ofxConnexionNodeController.cpp
 //
 //  Created by Eric Mika on 10/24/15.
 //
 //
 
-#include "ofxConnectionNodeController.h"
+#include "ofxConnexionNodeController.h"
 
-ofxConnectionNodeController::ofxConnectionNodeController() {
+ofxConnexionNodeController::ofxConnexionNodeController() {
   upVector.set(0, 1, 0);
   isInputEnabled = false;
   rotationSensitivity = 0.002;
@@ -19,46 +19,46 @@ ofxConnectionNodeController::ofxConnectionNodeController() {
   enableInput();
 }
 
-ofxConnectionNodeController::~ofxConnectionNodeController() {
+ofxConnexionNodeController::~ofxConnexionNodeController() {
   disableInput();
 }
 
-void ofxConnectionNodeController::enableInput() {
+void ofxConnexionNodeController::enableInput() {
   if (!isInputEnabled) {
     isInputEnabled = true;
     ofxConnexion::start();
-    ofAddListener(ofxConnexion::axisUpdateEvent, this, &ofxConnectionNodeController::onAxisUpdate);
-    ofAddListener(ofxConnexion::buttonPressedEvent, this, &ofxConnectionNodeController::onButtonPressed);
-    ofAddListener(ofxConnexion::buttonReleasedEvent, this, &ofxConnectionNodeController::onButtonReleased);
+    ofAddListener(ofxConnexion::axisUpdateEvent, this, &ofxConnexionNodeController::onAxisUpdate);
+    ofAddListener(ofxConnexion::buttonPressedEvent, this, &ofxConnexionNodeController::onButtonPressed);
+    ofAddListener(ofxConnexion::buttonReleasedEvent, this, &ofxConnexionNodeController::onButtonReleased);
   }
 }
 
-void ofxConnectionNodeController::disableInput() {
+void ofxConnexionNodeController::disableInput() {
   if (isInputEnabled) {
     isInputEnabled = false;
-    ofRemoveListener(ofxConnexion::axisUpdateEvent, this, &ofxConnectionNodeController::onAxisUpdate);
-    ofRemoveListener(ofxConnexion::buttonPressedEvent, this, &ofxConnectionNodeController::onButtonPressed);
-    ofRemoveListener(ofxConnexion::buttonReleasedEvent, this, &ofxConnectionNodeController::onButtonReleased);
+    ofRemoveListener(ofxConnexion::axisUpdateEvent, this, &ofxConnexionNodeController::onAxisUpdate);
+    ofRemoveListener(ofxConnexion::buttonPressedEvent, this, &ofxConnexionNodeController::onButtonPressed);
+    ofRemoveListener(ofxConnexion::buttonReleasedEvent, this, &ofxConnexionNodeController::onButtonReleased);
     ofxConnexion::stop();
   }
 }
 
-bool ofxConnectionNodeController::getInputEnabled() {
+bool ofxConnexionNodeController::getInputEnabled() {
   return isInputEnabled;
 }
 
-void ofxConnectionNodeController::onButtonPressed(int &button) {
+void ofxConnexionNodeController::onButtonPressed(int &button) {
   // Left button resets camera
   if (button == 0) {
     targetNode->resetTransform();
   }
 }
 
-void ofxConnectionNodeController::onButtonReleased(int &button) {
+void ofxConnexionNodeController::onButtonReleased(int &button) {
   // Nothing yet...
 }
 
-void ofxConnectionNodeController::onAxisUpdate(ConnexionData &data) {
+void ofxConnexionNodeController::onAxisUpdate(ConnexionData &data) {
   if (isRotationEnabled) {
     updateRotation(data);
   }
@@ -68,7 +68,7 @@ void ofxConnectionNodeController::onAxisUpdate(ConnexionData &data) {
   }
 }
 
-void ofxConnectionNodeController::updateTranslation(ConnexionData &data) {
+void ofxConnexionNodeController::updateTranslation(ConnexionData &data) {
   // clang-format off
   targetNode->move((targetNode->getXAxis() * (float)data.position[0] * translationSensitivity)
                   -(targetNode->getYAxis() * (float)data.position[2] * translationSensitivity)
@@ -76,7 +76,7 @@ void ofxConnectionNodeController::updateTranslation(ConnexionData &data) {
   // clang-format on
 }
 
-void ofxConnectionNodeController::updateRotation(ConnexionData &data) {
+void ofxConnexionNodeController::updateRotation(ConnexionData &data) {
   // clang-format off
   targetNode->rotate(ofQuaternion((float)data.rotation[0] * rotationSensitivity * (isPitchInverted ? 1.0 : -1.0), targetNode->getXAxis(), // pitch
                                   (float)-data.rotation[2] * rotationSensitivity, isRollEnabled ? targetNode->getYAxis() : upVector,      // yaw
