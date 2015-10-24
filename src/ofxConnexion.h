@@ -5,10 +5,11 @@
 
 class ConnexionData {
 public:
-  short position[3];
-  short rotation[3];
-  short deviceId;
-  short buttonState;
+  // see ConnectionClient.h for sizes
+  int16_t position[3];
+  int16_t rotation[3];
+  uint16_t deviceId;
+  uint32_t buttonState;
 
   bool getButton(int button);
 
@@ -19,7 +20,9 @@ public:
 
 class ofxConnexion {
 public:
-  static ofEvent<ConnexionData> connexionEvent;
+  static ofEvent<ConnexionData> axisUpdateEvent;
+  static ofEvent<int> buttonPressedEvent;
+  static ofEvent<int> buttonReleasedEvent;
   static ConnexionData connexionData;
 
   static void start();
