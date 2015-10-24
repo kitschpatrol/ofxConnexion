@@ -67,13 +67,13 @@ void ofxConnexionCam::updateTranslation(){
 	ConnexionData& data = ofxConnexion::connexionData;
 #if 1
     float distance = getDistance() / 2000;
-	move((getXAxis() * data.translation[0] / 100 * (distance + 1))
-         + (getYAxis() * data.translation[2] / 100 * (distance + 1))
-         - (getZAxis() * data.translation[1] / 100 * (distance + 1)));
+	move((getXAxis() * data.position[0] / 100 * (distance + 1))
+         + (getYAxis() * data.position[2] / 100 * (distance + 1))
+         - (getZAxis() * data.position[1] / 100 * (distance + 1)));
 #else
-    move((getXAxis() * data.translation[0] / 50)
-         + (getYAxis() * data.translation[2] / 50)
-         - (getZAxis() * data.translation[1] / 50));
+    move((getXAxis() * data.position[0] / 50)
+         + (getYAxis() * data.position[2] / 50)
+         - (getZAxis() * data.position[1] / 50));
 #endif
 }
 

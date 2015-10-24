@@ -30,7 +30,7 @@ void ofxConnexionCamera::drawDebug(){
 
 void ofxConnexionCamera::update(){
 
-	ConnexionData& data = connexion->getData();
+	ConnexionData& data = ofxConnexion::connexionData;
 	
 	//float leftRight = ofMap(data.translation[0],-2048,2048,-1,1,true);
 
@@ -40,9 +40,9 @@ void ofxConnexionCamera::update(){
 		data.rotation[2] > 0 ? 1 : -1);
 
 	ofVec3f translationSigns(
-		data.translation[0] > 0 ? 1 : -1,
-		data.translation[1] > 0 ? 1 : -1,
-		data.translation[2] > 0 ? 1 : -1);
+		data.position[0] > 0 ? 1 : -1,
+		data.position[1] > 0 ? 1 : -1,
+		data.position[2] > 0 ? 1 : -1);
 
 	ofVec3f rotateNormalized = ofVec3f(
 		powf(ofMap(abs(data.rotation[0]),-2048,2048,-1,1,true), exponent),
@@ -50,11 +50,11 @@ void ofxConnexionCamera::update(){
 		powf(ofMap(abs(data.rotation[2]),-2048,2048,-1,1,true), exponent)) * rotationSigns;
 
 	ofVec3f translateNormalized = ofVec3f(
-		powf(ofMap(abs(data.translation[0]),-2048,2048,-1,1,true), exponent),
-		powf(ofMap(abs(data.translation[1]),-2048,2048,-1,1,true), exponent),
-		powf(ofMap(abs(data.translation[2]),-2048,2048,-1,1,true), exponent)) * translationSigns;
+		powf(ofMap(abs(data.position[0]),-2048,2048,-1,1,true), exponent),
+		powf(ofMap(abs(data.position[1]),-2048,2048,-1,1,true), exponent),
+		powf(ofMap(abs(data.position[2]),-2048,2048,-1,1,true), exponent)) * translationSigns;
 
-	if(connexion->getData().active){
+	if(true){ // formerly connexion->getData().active, exclusive to obviousjim's branch?
 		curDampConstant = ofLerp(curDampConstant, activeDampConstant, .2);
 	}
 	else{

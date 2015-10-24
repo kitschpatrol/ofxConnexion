@@ -37,9 +37,9 @@ void ofApp::draw(){
 	// some of these things are negative, but might be different
 	// depending on how you've configured your space navigator
 	ofTranslate(
-		data.translation[0],
-		data.translation[2],
-		data.translation[1]);
+		data.position[0],
+		data.position[2],
+		data.position[1]);
 	ofRotateX(-data.rotation[0]);
 	ofRotateY(-data.rotation[2]);
 	ofRotateZ(-data.rotation[1]);
