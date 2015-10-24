@@ -68,8 +68,8 @@ void ofxConnexionCam::updateTranslation() {
 #if 1
   float distance = getDistance() / 2000;
 	move((getXAxis() * data.position[0] / 100 * (distance + 1))
-     + (getYAxis() * data.position[2] / 100 * (distance + 1))
-     - (getZAxis() * data.position[1] / 100 * (distance + 1)));
+     - (getYAxis() * data.position[2] / 100 * (distance + 1))
+     + (getZAxis() * data.position[1] / 100 * (distance + 1)));
 #else
     move((getXAxis() * data.position[0] / 50)
        + (getYAxis() * data.position[2] / 50)
@@ -82,8 +82,11 @@ void ofxConnexionCam::updateRotation() {
   ofQuaternion curRot;
   ConnexionData &data = ofxConnexion::connexionData;
 
-  curRot = ofQuaternion((float)data.rotation[0] / 500, ofCamera::getXAxis(), (float)-data.rotation[1] / 500, ofCamera::getYAxis(),
-                        (float)-data.rotation[2] / 500, ofCamera::getZAxis());
+  // clang-format off
+  curRot = ofQuaternion((float)data.rotation[0] / 500, ofCamera::getXAxis(),
+                        (float)-data.rotation[2] / 500, ofCamera::getYAxis(),
+                        (float)data.rotation[1] / 500, ofCamera::getZAxis());
+  // clang-format on
 
   ofNode &target = getTarget();
   // setPosition((ofCamera::getGlobalPosition()-target.getGlobalPosition())*curRot +target.getGlobalPosition());
