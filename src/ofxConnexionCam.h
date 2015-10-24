@@ -13,7 +13,7 @@ public:
   void disableInput();
   bool getInputEnabled();
 
-private:
+protected:
   void connexionUpdate(ofEventArgs &args);
   void updateRotation();
   void updateTranslation();

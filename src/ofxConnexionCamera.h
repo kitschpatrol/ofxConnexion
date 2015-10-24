@@ -24,9 +24,15 @@ public:
   ofVec3f baseOffset;
   ofVec3f baseRotate;
 
+  void enableInput();
+  void disableInput();
+  bool getInputEnabled();
+
 protected:
   ofxConnexion *connexion;
   float curDampConstant; // lerps between active and inactive
   ofVec3f curTranslate;
   ofVec3f curRotate;
+  bool bInputEnabled;
+  void connexionUpdate(ofEventArgs &args);
 };

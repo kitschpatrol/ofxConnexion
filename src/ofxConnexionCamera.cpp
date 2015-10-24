@@ -6,6 +6,7 @@ ofxConnexionCamera::ofxConnexionCamera() {
   activeDampConstant = .05;
   passiveDampConstant = .003;
   curDampConstant = .01;
+  bInputEnabled = false;
 
   maxRotate = ofVec3f(45, 30, 90);
   maxTranslate = ofVec3f(1000, 1000, 500);
@@ -15,14 +16,34 @@ void ofxConnexionCamera::setup(ofxConnexion &con) {
   connexion = &con;
 }
 
+void ofxConnexionCamera::enableInput() {
+  if (!bInputEnabled) {
+    bInputEnabled = true;
+    ofxConnexion::start();
+    ofAddListener(ofEvents().update, this, &ofxConnexionCamera::connexionUpdate);
+  }
+}
+
+void ofxConnexionCamera::disableInput() {
+  if (bInputEnabled) {
+    bInputEnabled = false;
+    ofRemoveListener(ofEvents().update, this, &ofxConnexionCamera::connexionUpdate);
+    ofxConnexion::stop();
+  }
+}
+
+bool ofxConnexionCamera::getInputEnabled() {
+  return bInputEnabled;
+}
+
 void ofxConnexionCamera::drawDebug() {
   ofPushStyle();
 
   ofNoFill();
   ofSetColor(ofColor::azure);
-  ofSphere(lookTarget, 10);
+  ofDrawSphere(lookTarget, 10);
   ofSetColor(ofColor::forestGreen);
-  ofLine(lookTarget, getPosition());
+  ofDrawLine(lookTarget, getPosition());
 
   ofPopStyle();
 }
@@ -95,4 +116,8 @@ void ofxConnexionCamera::update() {
 
   // finally apply twist
   rotate(baseRotate.y + mappedRotations.y, getLookAtDir());
+}
+
+void ofxConnexionCamera::connexionUpdate(ofEventArgs &args) {
+  update();
 }
